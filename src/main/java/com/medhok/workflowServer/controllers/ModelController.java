@@ -60,10 +60,6 @@ public class ModelController {
 	@GetMapping("/getModelsByTypeId/{modelTypeId}")
 	public List<Models> getModelsByTypeId(@PathVariable Integer modelTypeId) {
 		List<Models> models = modelRepo.getModelsByTypeId(modelTypeId);
-/*		List<Models> modelList = new ArrayList<>();
-		models.forEach(thisModel -> {
-			modelList.add(thisModel);
-		});*/
 
 		return models;
 	}	

@@ -15,18 +15,9 @@ public class WorkflowServerMain {
 	
 	private static Logger logger = LoggerFactory.getLogger(WorkflowServerMain.class);
 
-
-	
 	public static void main( String[] args )
 	{
 		SpringApplication.run(WorkflowServerMain.class, args);
 
 	}
-
-/*	@PostConstruct
-	public void init() {
-		
-
-	}*/
-
 }

@@ -24,15 +24,6 @@ public class Models {
 	@Column(name = "CONTENT", length = 1000)
 	private String content;
 	
-	//public Models() {}
-/*	
-	public Model (int id, int orgId, Integer typeId,String name, String content) {
-		this.id = id;
-		this.orgId = orgId;
-		this.modelTypeId = typeId;
-		this.name = name;
-		this.content = content;
-	}*/
 
 	public int getId() {
 		return id;
@@ -47,9 +38,7 @@ public class Models {
 	public void setOrgId(int orgId) {
 		this.orgId = orgId;
 	}
-	
-/*	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="model_type_id", nullable=false)*/	
+		
 	public Integer getModelTypeId() {
 		return modelTypeId;
 	}
