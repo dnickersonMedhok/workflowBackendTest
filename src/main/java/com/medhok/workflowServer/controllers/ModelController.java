@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,11 +32,13 @@ public class ModelController {
 	@Autowired
 	private ModelRepository modelRepo;
 	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/models")
 	public List<Models> retrieveAllStudents() {
 		return modelRepo.findAll();
 	}
 	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/models/{id}")
 	public Models retrieveModel(@PathVariable int id) {
 		Optional<Models> model = modelRepo.findById(id);
@@ -46,6 +49,8 @@ public class ModelController {
 
 		return model.get();
 	}
+	
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping(value = "/saveModel")
 	public ResponseEntity<Object> createStudent(@RequestBody Models model) {
 		Models savedModel = modelRepo.save(model);
@@ -57,6 +62,7 @@ public class ModelController {
 
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/getModelsByTypeId/{modelTypeId}")
 	public List<Models> getModelsByTypeId(@PathVariable Integer modelTypeId) {
 		List<Models> models = modelRepo.getModelsByTypeId(modelTypeId);
