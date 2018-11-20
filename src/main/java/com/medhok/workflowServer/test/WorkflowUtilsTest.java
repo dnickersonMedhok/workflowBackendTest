@@ -3,10 +3,15 @@ package com.medhok.workflowServer.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +24,7 @@ import com.medhok.workflowServer.utils.WorkflowUtils;
 @ComponentScan(basePackages={"com.medhok.workflowServer"})
 public class WorkflowUtilsTest {
 	
+	private Logger logger = LoggerFactory.getLogger(WorkflowUtilsTest.class);
 	
 	@Autowired
 	private WorkflowUtils utils;
@@ -246,6 +252,38 @@ public class WorkflowUtilsTest {
 			"}\n" + 
 			"";
 	
+	final String inputEntityString = "{\n" + 
+			"  \"entityName\": \"asdfsd\",\n" + 
+			"  \"parentTable\": \"\",\n" + 
+			"  \"fields\": [\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f1\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f2\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f3\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f4\",\n" + 
+			"      \"fieldType\": \"checkbox\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f5\",\n" + 
+			"      \"fieldType\": \"checkbox\"\n" + 
+			"    }\n" + 
+			"  ]\n" + 
+			"}";
+	
+	
 	@Test
 	public void testGetNextStep() throws Exception {
 		String thisStepId = "step1";
@@ -261,7 +299,28 @@ public class WorkflowUtilsTest {
 		assertNull(nextStep);
 	}
 	
+	@Test
+	public void testPopulateEntity() throws Exception {
+		JSONObject inputJson = new JSONObject(inputEntityString);
 
+		JSONObject outputTestJson = utils.populateEntityModel(inputJson);
+		assertEquals(outputTestJson.getString("table"), "GENERIC_TABLE_1");
+		JSONArray testArray = outputTestJson.getJSONArray("fields");
+		
+		JSONObject obj1 = testArray.getJSONObject(0);
+		assertEquals(obj1.getString("column"), "varchar451");
+		JSONObject obj2 = testArray.getJSONObject(1);
+		assertEquals(obj2.getString("column"), "varchar452");
+		JSONObject obj3 = testArray.getJSONObject(2);
+		assertEquals(obj3.getString("column"), "varchar453");
+		JSONObject obj4 = testArray.getJSONObject(3);
+		assertEquals(obj4.getString("column"), "varchar454");
+		JSONObject obj5 = testArray.getJSONObject(4);
+		assertEquals(obj5.getString("column"), "checkbox1");
+		JSONObject obj6 = testArray.getJSONObject(5);
+		assertEquals(obj6.getString("column"), "checkbox2");		
+			
+	}
 	
 	
 }

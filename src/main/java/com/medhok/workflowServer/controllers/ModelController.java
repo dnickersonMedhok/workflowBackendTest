@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.medhok.workflowServer.models.Models;
 import com.medhok.workflowServer.repositories.ModelRepository;
+import com.medhok.workflowServer.utils.WorkflowUtils;
 
 @RestController
 public class ModelController {
@@ -32,9 +33,12 @@ public class ModelController {
 	@Autowired
 	private ModelRepository modelRepo;
 	
+	@Autowired
+	private WorkflowUtils utils;
+	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/models")
-	public List<Models> retrieveAllStudents() {
+	public List<Models> retrieveAllModels() {
 		return modelRepo.findAll();
 	}
 	
@@ -52,7 +56,27 @@ public class ModelController {
 	
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping(value = "/saveModel")
-	public ResponseEntity<Object> createStudent(@RequestBody Models model) {
+	public ResponseEntity<Object> saveModel(@RequestBody Models model) {
+		Models savedModel = modelRepo.save(model);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(savedModel.getId()).toUri();
+
+		return ResponseEntity.created(location).build();
+
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping(value = "/saveEntityModel")
+	public ResponseEntity<Object> saveEntityModel(@RequestBody Models model) {
+		String entityJsonStr = model.getContent();
+		if(entityJsonStr != null) {
+			String populatedEntityStr = utils.populateEntityModelStr(entityJsonStr);
+			if(populatedEntityStr != null) {
+				model.setContent(populatedEntityStr);
+			}
+		}
+		
 		Models savedModel = modelRepo.save(model);
 
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
