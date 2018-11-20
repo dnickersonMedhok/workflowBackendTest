@@ -63,13 +63,118 @@
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version><!--$NO-MVN-MAN-VER$ -->
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<version>2.0.2.RELEASE</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.handlers</resource>
+								</transformer>
+								<transformer
+									implementation="org.springframework.boot.maven.PropertiesMergingResourceTransformer">
+									<resource>META-INF/spring.factories</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+									<resource>META-INF/spring.schemas</resource>
+								</transformer>
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.medhok.workflowServer.WorkflowServerMain</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<createDependencyReducedPom>false</createDependencyReducedPom>
 				</configuration>
 			</plugin>
+			<plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-jar-plugin</artifactId>
+                            <version>2.4</version>
+                           <configuration>
+                                  <archive>
+                                         <manifest>
+                                                <addClasspath>true</addClasspath>
+						<classpathPrefix>lib/</classpathPrefix> 
+                                                <useUniqueVersions>false</useUniqueVersions>
+                                                <mainClass>com.medhok.workflowServer.WorkflowServerMain</mainClass>
+                                         </manifest>
+                    
+                                         <manifestEntries>
+                                                <Implementation-Build>${buildNumber}</Implementation-Build>
+                                                <Implementation-Branch>${scmBranch}</Implementation-Branch> 
+                                                <SCM-Revision>${buildNumber}</SCM-Revision>
+                                   <SCM-Branch>${scmBranch}</SCM-Branch>
+                                   <Build-Time>${maven.build.timestamp}</Build-Time>
+                               <Build-Host>${agent.name}</Build-Host>
+                               <Build-User>${user.name}</Build-User>
+                               <Build-Maven>Maven ${maven.version}</Build-Maven>
+                               <Build-Java>${java.version}</Build-Java>
+                               <Build-OS>${os.name}</Build-OS>
+                               <Build-Label>${project.artifactId}.${project.version}</Build-Label>
+                               <Build-Path>${basedir}</Build-Path>
+                                         </manifestEntries>
+                                  </archive>
+                           </configuration>
+                     </plugin>
+ 
+                                                <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                           <artifactId>maven-dependency-plugin</artifactId>
+                           <version>2.10</version>
+                           <executions>
+                                  <execution>
+                                         <phase>package</phase>
+                                         <goals>
+                                                <goal>copy-dependencies</goal>
+                                         </goals>
+                                         <configuration>
+                                                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                                                <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
+                                         </configuration>
+                                  </execution>
+                           </executions>
+            </plugin>
+            <plugin>
+                           <groupId>org.apache.maven.plugins</groupId>
+                           <artifactId>maven-assembly-plugin</artifactId>
+                           <version>2.6</version>
+                           <configuration>
+                                  <descriptor>src/main/assembly/deploy.xml</descriptor>
+                                  <finalName>${project.artifactId}</finalName>
+                           </configuration>
+                           <executions>
+                                  <execution>
+                                         <phase>package</phase>
+                                         <goals>
+                                                <goal>single</goal>
+                                         </goals>
+                                  </execution>
+                           </executions>
+                     </plugin>
+			
+			
+			
 		</plugins>
 	</build>
 </project>
