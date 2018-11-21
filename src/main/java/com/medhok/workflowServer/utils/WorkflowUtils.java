@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.medhok.workflowServer.models.GenericTable1;
 import com.medhok.workflowServer.models.GenericTable2;
+import com.medhok.workflowServer.models.ParentGenericTableModel;
 import com.medhok.workflowServer.repositories.GenericTable1Repository;
 import com.medhok.workflowServer.repositories.GenericTable2Repository;
 import com.medhok.workflowServer.repositories.ModelRepository;
@@ -33,8 +34,12 @@ public class WorkflowUtils {
 	
 	//json node names
 	final String table = "table";
+	final String fields = "fields";
 	final String fieldType = "fieldType";
 	final String column = "column";
+	final String value = "value";
+	final String genericTable1 = "GENERIC_TABLE1";
+	final String genericTable2 = "GENERIC_TABLE2";
 
 	/**
 	 *  Given the workflow model, the current step id and the value of
@@ -176,6 +181,126 @@ public class WorkflowUtils {
 			logger.error("Error populating entity model", e);
 		}
 		return returnJsonStr;
+	}
+	
+	
+	/**
+	 * Save the values from the entity DTO 
+	 * @param <T>
+	 * 
+	 */
+	public boolean saveEntityValues(JSONObject entityDTO) {
+		if(entityDTO == null ) return false;
+		ParentGenericTableModel tableModel = new ParentGenericTableModel();
+		String tableName = null;
+		JSONArray fieldArray = null;
+		try {
+			tableName = entityDTO.getString(table);
+			fieldArray = entityDTO.getJSONArray(fields);
+		} catch (JSONException e) {
+			logger.error("Can't create entity DTO", e);
+			return false;
+		}
+		
+		String column = null;
+		String valueStr = null;
+		for(int i = 0; i < fieldArray.length(); i++) {
+			try {
+				column = fieldArray.getJSONObject(i).getString(column);
+				valueStr = fieldArray.getJSONObject(i).getString(value);
+			} catch (JSONException e) {
+				logger.debug("no value for column");
+				continue;
+			}
+			if(column != null && valueStr != null) {
+				populateColumn(tableModel, column, valueStr);
+			}
+			
+		}
+			
+		switch(tableName) {
+			case genericTable1 :
+				tableModel = g1Repo.save((GenericTable1)tableModel);
+				break;
+			case genericTable2 :
+				tableModel = g2Repo.save((GenericTable2)tableModel);
+		}
+		
+		return tableModel.getId() == 0?false:true;
+	}
+	
+	/**
+	 * Side effect: populate the given column with the given value.
+	 * 
+	 * @param tableModel
+	 * @param column
+	 * @param value
+	 */
+	private void populateColumn(ParentGenericTableModel tableModel, String column, String value) {
+		
+		switch(column) {
+		case "VARCHAR_45_1" :
+			tableModel.setVarchar451(value);
+			break;
+		case "VARCHAR_45_2" :
+			tableModel.setVarchar452(value);
+			break;
+		case "VARCHAR_45_3" :
+			tableModel.setVarchar453(value);
+			break;
+		case "VARCHAR_45_4" :
+			tableModel.setVarchar454(value);
+			break;
+		case "VARCHAR_45_5" :
+			tableModel.setVarchar455(value);
+			break;
+		case "VARCHAR_45_6" :
+			tableModel.setVarchar456(value);
+			break;
+		case "VARCHAR_45_7" :
+			tableModel.setVarchar457(value);
+			break;
+		case "VARCHAR_45_8" :
+			tableModel.setVarchar458(value);
+			break;
+		case "VARCHAR_45_9" :
+			tableModel.setVarchar459(value);
+			break;
+		case "VARCHAR_45_10" :
+			tableModel.setVarchar4510(value);
+			break;
+		case "CHECKBOX_1" :
+			tableModel.setCheckbox1(value);
+			break;
+		case "CHECKBOX_2" :
+			tableModel.setCheckbox2(value);
+			break;
+		case "CHECKBOX_3" :
+			tableModel.setCheckbox3(value);
+			break;
+		case "CHECKBOX_4" :
+			tableModel.setCheckbox4(value);
+			break;
+		case "CHECKBOX_5" :
+			tableModel.setCheckbox5(value);
+			break;
+		case "CHECKBOX_6" :
+			tableModel.setCheckbox6(value);
+			break;
+		case "CHECKBOX_7" :
+			tableModel.setCheckbox7(value);
+			break;
+		case "CHECKBOX_8" :
+			tableModel.setCheckbox8(value);
+			break;
+		case "CHECKBOX_9" :
+			tableModel.setCheckbox9(value);
+			break;
+		case "CHECKBOX_10" :
+			tableModel.setCheckbox10(value);
+			break;
+		
+		}		
 	}
 
 

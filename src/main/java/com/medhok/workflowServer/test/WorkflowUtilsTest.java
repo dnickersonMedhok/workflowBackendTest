@@ -283,6 +283,51 @@ public class WorkflowUtilsTest {
 			"  ]\n" + 
 			"}";
 	
+	final String inputEntityValueString = "{\n" + 
+			"  \"entityName\": \"asdfsd\",\n" + 
+			"  \"parentTable\": \"\",\n" + 
+			"  \"table\": \"GENERIC_TABLE_1\",\n" + 
+
+			"  \"fields\": [\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f\",\n" + 
+			"      \"fieldType\": \"text\",\n" +
+		    "      \"column\": \"varchar_45_1\",\n" +
+			"      \"value\": \"field f value\"\n" +
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f1\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+		    "      \"column\": \"varchar_45_2\",\n" +
+			"      \"value\": \"field f1 value\"\n" +
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f2\",\n" + 
+			"      \"fieldType\": \"text\",\n" +
+		    "      \"column\": \"varchar_45_3\",\n" +
+			"      \"value\": \"field f2 value\"\n" +
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f3\",\n" + 
+			"      \"fieldType\": \"text\",\n" +
+		    "      \"column\": \"varchar_45_4\",\n" +
+			"      \"value\": \"field f3 value\"\n" +
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f4\",\n" + 
+			"      \"fieldType\": \"checkbox\",\n" +
+		    "      \"column\": \"checkbox_1\",\n" +
+			"      \"value\": \"1\"\n" +
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f5\",\n" + 
+			"      \"fieldType\": \"checkbox\",\n" +
+		    "      \"column\": \"varchar_45_1\",\n" +
+			"      \"value\": \"1\"\n" +
+			"    }\n" + 
+			"  ]\n" + 
+			"}";
+	
 	
 	@Test
 	public void testGetNextStep() throws Exception {
@@ -319,7 +364,14 @@ public class WorkflowUtilsTest {
 		assertEquals(obj5.getString("column"), "checkbox1");
 		JSONObject obj6 = testArray.getJSONObject(5);
 		assertEquals(obj6.getString("column"), "checkbox2");		
-			
+	}
+	
+	@Test
+	public void testSaveValues() {
+		
+		JSONObject entityDTO = new JSONObject();
+		assertTrue(utils.saveEntityValues(entityDTO));
+		
 	}
 	
 	

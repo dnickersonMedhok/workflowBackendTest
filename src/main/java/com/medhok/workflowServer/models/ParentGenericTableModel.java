@@ -3,61 +3,39 @@ package com.medhok.workflowServer.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+/**
+ * Not a hibernate model.  Used for polymorphism when we don't know 
+ * which table we are using.
+ * 
+ * 
+ * 
+ * @author dnickerson
+ *
+ */
+public class ParentGenericTableModel {
 
-@Entity
-@Table(name = "GENERIC_TABLE_2")
-public class GenericTable2  extends ParentGenericTableModel {
 
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID")
 	private int id;
-	@Column(name = "VARCHAR_45_1", length = 45)
 	private String varchar451;
-	@Column(name = "VARCHAR_45_2", length = 45)
 	private String varchar452;
-	@Column(name = "VARCHAR_45_3", length = 45)
 	private String varchar453;
-	@Column(name = "VARCHAR_45_4", length = 45)
 	private String varchar454;
-	@Column(name = "VARCHAR_45_5", length = 45)
 	private String varchar455;
-	@Column(name = "VARCHAR_45_6", length = 45)
 	private String varchar456;
-	@Column(name = "VARCHAR_45_7", length = 45)
 	private String varchar457;
-	@Column(name = "VARCHAR_45_8", length = 45)
 	private String varchar458;
-	@Column(name = "VARCHAR_45_9", length = 45)
 	private String varchar459;
-	@Column(name = "VARCHAR_45_10", length = 45)
 	private String varchar4510;
-	@Column(name = "CHECKBOX_1")
 	private String checkbox1;
-	@Column(name = "CHECKBOX_2")
 	private String checkbox2;
-	@Column(name = "CHECKBOX_3")
 	private String checkbox3;
-	@Column(name = "CHECKBOX_4")
 	private String checkbox4;
-	@Column(name = "CHECKBOX_5")
 	private String checkbox5;
-	@Column(name = "CHECKBOX_6")
 	private String checkbox6;
-	@Column(name = "CHECKBOX_7")
 	private String checkbox7;
-	@Column(name = "CHECKBOX_8")
 	private String checkbox8;
-	@Column(name = "CHECKBOX_9")
 	private String checkbox9;
-	@Column(name = "CHECKBOX_10")
 	private String checkbox10;
 	
 	public int getId() {
@@ -185,7 +163,7 @@ public class GenericTable2  extends ParentGenericTableModel {
 	}
 	public void setCheckbox10(String checkbox10) {
 		this.checkbox10 = checkbox10;
-	}	
+	}
 	
 	public static List<String> getTextFieldList() {
 		List<String> textFieldList = new ArrayList<>();
@@ -219,4 +197,5 @@ public class GenericTable2  extends ParentGenericTableModel {
 		
 		return checkboxFieldList;
 	}
+	
 }

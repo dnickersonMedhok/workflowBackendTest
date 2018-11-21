@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "GENERIC_TABLE_1")
-public class GenericTable1 {
+public class GenericTable1 extends ParentGenericTableModel {
 
 
 	@Id
