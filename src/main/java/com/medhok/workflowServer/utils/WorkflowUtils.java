@@ -38,8 +38,8 @@ public class WorkflowUtils {
 	final String fieldType = "fieldType";
 	final String column = "column";
 	final String value = "value";
-	final String genericTable1 = "GENERIC_TABLE1";
-	final String genericTable2 = "GENERIC_TABLE2";
+	final String genericTable1 = "GENERIC_TABLE_1";
+	final String genericTable2 = "GENERIC_TABLE_2";
 
 	/**
 	 *  Given the workflow model, the current step id and the value of
@@ -120,7 +120,6 @@ public class WorkflowUtils {
 		return nextStepId;
 	}
 	
-	
 	public JSONObject populateEntityModel(JSONObject entityJson) {
 		if(entityJson == null) return null;
 
@@ -184,14 +183,29 @@ public class WorkflowUtils {
 	}
 	
 	
+	
+	public boolean saveEntityValues(String entityDTO) {
+		if(entityDTO == null) return false;
+		JSONObject entityJson = null;
+		try {
+			entityJson = new JSONObject(entityDTO);
+		} catch (JSONException e) {
+			logger.error("Error creating entityDTO json", e);
+			return false;
+		}
+		return saveEntityValues(entityJson);
+	}
+	
 	/**
-	 * Save the values from the entity DTO 
-	 * @param <T>
+	 * Save the values from the entity DTO
+	 * into the appropriate generic table
+	 *  
+	 * @param entityDTO
 	 * 
 	 */
 	public boolean saveEntityValues(JSONObject entityDTO) {
 		if(entityDTO == null ) return false;
-		ParentGenericTableModel tableModel = new ParentGenericTableModel();
+		ParentGenericTableModel tableModel = null;
 		String tableName = null;
 		JSONArray fieldArray = null;
 		try {
@@ -202,25 +216,36 @@ public class WorkflowUtils {
 			return false;
 		}
 		
-		String column = null;
+		switch(tableName) {
+		case genericTable1 :
+			tableModel = new GenericTable1();
+			break;
+		case genericTable2 :
+			tableModel = new GenericTable2();
+		
+		}
+		
+		
+		String columnStr = null;
 		String valueStr = null;
 		for(int i = 0; i < fieldArray.length(); i++) {
 			try {
-				column = fieldArray.getJSONObject(i).getString(column);
+				JSONObject thisNode = fieldArray.getJSONObject(i); 
+				columnStr = thisNode.getString(column);
 				valueStr = fieldArray.getJSONObject(i).getString(value);
 			} catch (JSONException e) {
 				logger.debug("no value for column");
 				continue;
 			}
-			if(column != null && valueStr != null) {
-				populateColumn(tableModel, column, valueStr);
+			if(columnStr != null && valueStr != null) {
+				populateColumn(tableModel, columnStr, valueStr);
 			}
 			
 		}
 			
 		switch(tableName) {
 			case genericTable1 :
-				tableModel = g1Repo.save((GenericTable1)tableModel);
+				g1Repo.save((GenericTable1)tableModel);
 				break;
 			case genericTable2 :
 				tableModel = g2Repo.save((GenericTable2)tableModel);
@@ -238,7 +263,7 @@ public class WorkflowUtils {
 	 */
 	private void populateColumn(ParentGenericTableModel tableModel, String column, String value) {
 		
-		switch(column) {
+		switch(column.toUpperCase()) {
 		case "VARCHAR_45_1" :
 			tableModel.setVarchar451(value);
 			break;
@@ -270,34 +295,34 @@ public class WorkflowUtils {
 			tableModel.setVarchar4510(value);
 			break;
 		case "CHECKBOX_1" :
-			tableModel.setCheckbox1(value);
+			tableModel.setCheckbox1(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_2" :
-			tableModel.setCheckbox2(value);
+			tableModel.setCheckbox2(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_3" :
-			tableModel.setCheckbox3(value);
+			tableModel.setCheckbox3(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_4" :
-			tableModel.setCheckbox4(value);
+			tableModel.setCheckbox4(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_5" :
-			tableModel.setCheckbox5(value);
+			tableModel.setCheckbox5(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_6" :
-			tableModel.setCheckbox6(value);
+			tableModel.setCheckbox6(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_7" :
-			tableModel.setCheckbox7(value);
+			tableModel.setCheckbox7(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_8" :
-			tableModel.setCheckbox8(value);
+			tableModel.setCheckbox8(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_9" :
-			tableModel.setCheckbox9(value);
+			tableModel.setCheckbox9(Integer.parseInt(value));
 			break;
 		case "CHECKBOX_10" :
-			tableModel.setCheckbox10(value);
+			tableModel.setCheckbox10(Integer.parseInt(value));
 			break;
 		
 		}		

@@ -40,25 +40,25 @@ public class GenericTable1 extends ParentGenericTableModel {
 	@Column(name = "VARCHAR_45_10", length = 45)
 	private String varchar4510;
 	@Column(name = "CHECKBOX_1")
-	private String checkbox1;
+	private int checkbox1;
 	@Column(name = "CHECKBOX_2")
-	private String checkbox2;
+	private int checkbox2;
 	@Column(name = "CHECKBOX_3")
-	private String checkbox3;
+	private int checkbox3;
 	@Column(name = "CHECKBOX_4")
-	private String checkbox4;
+	private int checkbox4;
 	@Column(name = "CHECKBOX_5")
-	private String checkbox5;
+	private int checkbox5;
 	@Column(name = "CHECKBOX_6")
-	private String checkbox6;
+	private int checkbox6;
 	@Column(name = "CHECKBOX_7")
-	private String checkbox7;
+	private int checkbox7;
 	@Column(name = "CHECKBOX_8")
-	private String checkbox8;
+	private int checkbox8;
 	@Column(name = "CHECKBOX_9")
-	private String checkbox9;
+	private int checkbox9;
 	@Column(name = "CHECKBOX_10")
-	private String checkbox10;
+	private int checkbox10;
 	
 	public int getId() {
 		return id;
@@ -126,64 +126,64 @@ public class GenericTable1 extends ParentGenericTableModel {
 	public void setVarchar4510(String varchar4510) {
 		this.varchar4510 = varchar4510;
 	}
-	public String getCheckbox1() {
+	public int getCheckbox1() {
 		return checkbox1;
 	}
-	public void setCheckbox1(String checkbox1) {
+	public void setCheckbox1(int checkbox1) {
 		this.checkbox1 = checkbox1;
 	}
-	public String getCheckbox2() {
+	public int getCheckbox2() {
 		return checkbox2;
 	}
-	public void setCheckbox2(String checkbox2) {
+	public void setCheckbox2(int checkbox2) {
 		this.checkbox2 = checkbox2;
 	}
-	public String getCheckbox3() {
+	public int getCheckbox3() {
 		return checkbox3;
 	}
-	public void setCheckbox3(String checkbox3) {
+	public void setCheckbox3(int checkbox3) {
 		this.checkbox3 = checkbox3;
 	}
-	public String getCheckbox4() {
+	public int getCheckbox4() {
 		return checkbox4;
 	}
-	public void setCheckbox4(String checkbox4) {
+	public void setCheckbox4(int checkbox4) {
 		this.checkbox4 = checkbox4;
 	}
-	public String getCheckbox5() {
+	public int getCheckbox5() {
 		return checkbox5;
 	}
-	public void setCheckbox5(String checkbox5) {
+	public void setCheckbox5(int checkbox5) {
 		this.checkbox5 = checkbox5;
 	}
-	public String getCheckbox6() {
+	public int getCheckbox6() {
 		return checkbox6;
 	}
-	public void setCheckbox6(String checkbox6) {
+	public void setCheckbox6(int checkbox6) {
 		this.checkbox6 = checkbox6;
 	}
-	public String getCheckbox7() {
+	public int getCheckbox7() {
 		return checkbox7;
 	}
-	public void setCheckbox7(String checkbox7) {
+	public void setCheckbox7(int checkbox7) {
 		this.checkbox7 = checkbox7;
 	}
-	public String getCheckbox8() {
+	public int getCheckbox8() {
 		return checkbox8;
 	}
-	public void setCheckbox8(String checkbox8) {
+	public void setCheckbox8(int checkbox8) {
 		this.checkbox8 = checkbox8;
 	}
-	public String getCheckbox9() {
+	public int getCheckbox9() {
 		return checkbox9;
 	}
-	public void setCheckbox9(String checkbox9) {
+	public void setCheckbox9(int checkbox9) {
 		this.checkbox9 = checkbox9;
 	}
-	public String getCheckbox10() {
+	public int getCheckbox10() {
 		return checkbox10;
 	}
-	public void setCheckbox10(String checkbox10) {
+	public void setCheckbox10(int checkbox10) {
 		this.checkbox10 = checkbox10;
 	}
 	

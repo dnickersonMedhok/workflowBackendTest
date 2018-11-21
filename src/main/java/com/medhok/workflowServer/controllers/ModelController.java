@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.medhok.workflowServer.models.Models;
+import com.medhok.workflowServer.models.ParentGenericTableModel;
 import com.medhok.workflowServer.repositories.ModelRepository;
 import com.medhok.workflowServer.utils.WorkflowUtils;
 
@@ -84,6 +85,14 @@ public class ModelController {
 
 		return ResponseEntity.created(location).build();
 
+	}
+	
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping(value = "/saveEntityDTO")
+	public boolean saveEntityDTO(@RequestBody Models model) {
+		
+		String entityJsonStr = model.getContent();
+		return utils.saveEntityValues(entityJsonStr);
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000")
