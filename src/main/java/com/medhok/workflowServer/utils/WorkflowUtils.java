@@ -40,7 +40,10 @@ public class WorkflowUtils {
 	final String value = "value";
 	final String genericTable1 = "GENERIC_TABLE_1";
 	final String genericTable2 = "GENERIC_TABLE_2";
-
+	public static final Integer ENTITY = 1;
+	public static final Integer FORM = 2;
+	public static final Integer WORKFLOW = 3;
+	
 	/**
 	 *  Given the workflow model, the current step id and the value of
 	 *  the decision rule find the next step id.

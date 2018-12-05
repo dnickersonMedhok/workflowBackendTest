@@ -58,35 +58,24 @@ public class ModelController {
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping(value = "/saveModel")
 	public ResponseEntity<Object> saveModel(@RequestBody Models model) {
-		Models savedModel = modelRepo.save(model);
-
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(savedModel.getId()).toUri();
-
-		return ResponseEntity.created(location).build();
-
-	}
-	
-	@CrossOrigin(origins = "http://localhost:3000")
-	@PostMapping(value = "/saveEntityModel")
-	public ResponseEntity<Object> saveEntityModel(@RequestBody Models model) {
-		String entityJsonStr = model.getContent();
-		if(entityJsonStr != null) {
-			String populatedEntityStr = utils.populateEntityModelStr(entityJsonStr);
-			if(populatedEntityStr != null) {
-				model.setContent(populatedEntityStr);
+		//For entity models select the generic table and columns and populate the json
+		if(model.getModelTypeId() == WorkflowUtils.ENTITY) {
+			String entityJsonStr = model.getContent();
+			if(entityJsonStr != null) {
+				String populatedEntityStr = utils.populateEntityModelStr(entityJsonStr);
+				if(populatedEntityStr != null) {
+					model.setContent(populatedEntityStr);
+				}
 			}
 		}
-		
-		Models savedModel = modelRepo.save(model);
 
+		Models savedModel = modelRepo.save(model);
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(savedModel.getId()).toUri();
 
 		return ResponseEntity.created(location).build();
-
 	}
-	
+
 	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping(value = "/saveEntityDTO")
 	public boolean saveEntityDTO(@RequestBody Models model) {
