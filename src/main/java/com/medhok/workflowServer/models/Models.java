@@ -19,12 +19,13 @@ public class Models {
 	private int orgId;
 	@Column(name = "MODEL_TYPE_ID")
 	private int modelTypeId;
+	@Column(name = "REFERENCE_ENTITY_ID")
+	private Integer referenceEntityId;
 	@Column(name = "NAME", length = 100)
 	private String name;
 	@Column(name = "CONTENT", length = 1000)
 	private String content;
 	
-
 	public int getId() {
 		return id;
 	}
@@ -45,6 +46,14 @@ public class Models {
 
 	public void setModelTypeId(Integer modelTypeId) {
 		this.modelTypeId = modelTypeId;
+	}
+	
+	public Integer getReferenceEntityId() {
+		return referenceEntityId;
+	}
+
+	public void setReferenceEntityId(Integer referenceEntityId) {
+		this.referenceEntityId = referenceEntityId;
 	}
 	
 	public String getName() {

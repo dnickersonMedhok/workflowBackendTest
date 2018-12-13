@@ -35,6 +35,141 @@ public class WorkflowUtilsTest {
 	@Autowired
 	GenericTable1Repository g1repo;
 	
+	final String testWorkflowModelStr = "{\n" + 
+			"  \"step1\": {\n" + 
+			"    \"task1\": {\n" + 
+			"      \"parentFormId\": \"1\",\n" + 
+			"      \"workFlowStatus\": \"1\",\n" + 
+			"      \"decision\": [\n" + 
+			"        {\n" + 
+			"          \"multiDecision\": {\n" + 
+			"            \"decisionArray\": [\n" + 
+			"              {\n" + 
+			"                \"descisionField\": \"Status\",\n" + 
+			"                \"value\": \"Cancelled\"\n" + 
+			"              },\n" + 
+			"              {\n" + 
+			"                \"descisionField\": \"Submitted By\",\n" + 
+			"                \"value\": \"Provider\"\n" + 
+			"              }\n" + 
+			"            ],\n" + 
+			"            \"nextStepId\": 2\n" + 
+			"          }\n" + 
+			"        },\n" + 
+			"        {\n" + 
+			"          \"descisionField\": \"Status\",\n" + 
+			"          \"value\": \"In Progress\",\n" + 
+			"          \"nextScreenId\": 3\n" + 
+			"        }\n" + 
+			"      ]\n" + 
+			"    },\n" + 
+			"    \"stepId\": \"1\"\n" + 
+			"  },\n" + 
+			"  \"step2\": {\n" + 
+			"    \"stepId\": 2,\n" + 
+			"    \"task1\": {\n" + 
+			"      \"workFlowStatus\": \"2\",\n" + 
+			"      \"decision\": [\n" + 
+			"        {\n" + 
+			"          \"descisionField\": \"Status Reason\",\n" + 
+			"          \"value\": \"Data Entry Error\",\n" + 
+			"          \"nextScreenId\": 4\n" + 
+			"        },\n" + 
+			"        {\n" + 
+			"          \"descisionField\": \"Status Reason\",\n" + 
+			"          \"value\": \"Carelink\",\n" + 
+			"          \"nextScreenId\": 5\n" + 
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"step3\": {\n" + 
+			"    \"stepId\": 3,\n" + 
+			"    \"task1\": {\n" + 
+			"      \"workFlowStatus\": \"2\"\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"step4\": {\n" + 
+			"    \"stepId\": 4,\n" + 
+			"    \"task1\": {\n" + 
+			"      \"workFlowStatus\": \"3\"\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"step5\": {\n" + 
+			"    \"stepId\": 5,\n" + 
+			"    \"task1\": {\n" + 
+			"      \"workFlowStatus\": \"3\"\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"      \"connections\": [\n" + 
+			"      {\n" + 
+			"        \"sourceId\": \"1\",\n" + 
+			"        \"targetId\": \"2\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"sourceId\": \"2\",\n" + 
+			"        \"targetId\": \"3\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"data\": {\n" + 
+			"          \"condition\": \"true\"\n" + 
+			"        },\n" + 
+			"        \"sourceId\": \"3\",\n" + 
+			"        \"targetId\": \"4\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"data\": {\n" + 
+			"          \"condition\": \"false\"\n" + 
+			"        },\n" + 
+			"        \"sourceId\": \"3\",\n" + 
+			"        \"targetId\": \"5\"\n" + 
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"nodes\": [\n" + 
+			"      {\n" + 
+			"        \"step\": \"step1\",\n" + 
+			"        \"config\": {\n" + 
+			"          \"label\": \"Step 1\",\n" + 
+			"          \"type\": \"transform\"\n" + 
+			"        },\n" + 
+			"        \"id\": \"1\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"step\": \"step2\",\n" + 
+			"        \"config\": {\n" + 
+			"          \"label\": \"Step 2\",\n" + 
+			"          \"type\": \"transform\"\n" + 
+			"        },\n" + 
+			"        \"id\": \"2\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"step\": \"step3\",\n" + 
+			"        \"config\": {\n" + 
+			"          \"label\": \"Conditional logic\",\n" + 
+			"          \"type\": \"condition\"\n" + 
+			"        },\n" + 
+			"        \"id\": \"3\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"step\": \"step4\",\n" + 
+			"        \"config\": {\n" + 
+			"          \"label\": \"Step 3\",\n" + 
+			"          \"type\": \"transform\"\n" + 
+			"        },\n" + 
+			"        \"id\": \"4\"\n" + 
+			"      },\n" + 
+			"      {\n" + 
+			"        \"step\": \"step5\",\n" + 
+			"        \"config\": {\n" + 
+			"          \"label\": \"Step 4\",\n" + 
+			"          \"type\": \"transform\"\n" + 
+			"        },\n" + 
+			"        \"id\": \"5\"\n" + 
+			"      }\n" + 
+			"    ]\n" + 
+			"}";
+	
+	
 	final String testJsonStr = "{\n" + 
 			"  \"rules\": [\n" + 
 			"    {\n" + 
@@ -332,6 +467,104 @@ public class WorkflowUtilsTest {
 			"    }\n" + 
 			"  ]\n" + 
 			"}";
+	
+	final String testEntityDTOStr = "{\n" + 
+			"  \"entityName\": \"asdfsd\",\n" + 
+			"  \"parentTable\": \"\",\n" + 
+			"  \"table\": \"GENERIC_TABLE_1\",\n" + 
+			"  \"fields\": [\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"Status\",\n" + 
+			"      \"column\": \"varchar451\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+			"      \"value\": \"Cancelled\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"Submitted by\",\n" + 
+			"      \"column\": \"varchar452\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+			"      \"value\": \"Provider\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"Status Reason\",\n" + 
+			"      \"column\": \"varchar453\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+			"      \"value\": \"Data Entry Error\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f2\",\n" + 
+			"      \"column\": \"varchar454\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f\",\n" + 
+			"      \"column\": \"varchar455\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"f2\",\n" + 
+			"      \"column\": \"varchar456\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"d6\",\n" + 
+			"      \"column\": \"varchar457\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"jhjh\",\n" + 
+			"      \"column\": \"varchar458\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"123\",\n" + 
+			"      \"column\": \"varchar459\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"fieldName\": \"ert\",\n" + 
+			"      \"column\": \"varchar4510\",\n" + 
+			"      \"fieldType\": \"text\"\n" + 
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"table\": \"GENERIC_TABLE_1\"\n" + 
+			"}";
+	
+	final static String testDecision = "        {\n" + 
+			"          \"decision\": [\n" + 
+			"            {\n" + 
+			"              \"decisionField\": \"Status\",\n" + 
+			"              \"decisionValue\": \"Cancelled\",\n" + 
+			"              \"fieldType\": \"String\"\n" + 
+			"            },\n" + 
+			"            {\n" + 
+			"              \"decisionField\": \"Status Reason\",\n" + 
+			"              \"decisionValue\": \"Data Entry Error\",\n" + 
+			"              \"fieldType\": \"String\"\n" + 
+			"            }\n" + 
+			"          ],\n" + 
+			"          \"decisionOperator\": \"and\"\n" + 
+			"        }";
+	
+	@Test
+	public void testGetValueForField() throws Exception {
+		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
+		
+		String valueStr = utils.getStringValueForField(entityDTO, "Status");
+		assertEquals(valueStr, "Cancelled");
+		valueStr = utils.getStringValueForField(entityDTO, "Submitted by");
+		assertEquals(valueStr, "Provider");
+		valueStr = utils.getStringValueForField(entityDTO, "Doesn't exist");
+		assertNull(valueStr);
+	}
+	
+	
+	@Test
+	public void testEvaluateDecisionNode() throws Exception {
+		JSONObject testDecisionJson = new JSONObject(testDecision);
+		JSONObject testEntityDTO = new JSONObject(testEntityDTOStr);
+		assertTrue(utils.evaluateDecisionNode(testDecisionJson, testEntityDTO));
+	}
 	
 	
 	@Test

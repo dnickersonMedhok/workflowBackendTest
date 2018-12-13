@@ -91,4 +91,12 @@ public class ModelController {
 
 		return models;
 	}	
+	
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/getFormModelsByEntityId/{referenceEntityId}")
+	public List<Models> getFormModelsByEntityId(@PathVariable Integer referenceEntityId) {
+		List<Models> models = modelRepo.getFormModelsByEntityId(referenceEntityId);
+
+		return models;
+	}	
 }

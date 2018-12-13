@@ -14,5 +14,7 @@ public interface ModelRepository extends JpaRepository<Models, Integer> {
 
 	@Query("from Models where model_type_id = :modelTypeId")
 	public List<Models> getModelsByTypeId(@Param("modelTypeId") Integer ModelTypeId);
-	
+
+	@Query("from Models where model_type_id = 2 and reference_entity_id = :referenceEntityId")
+	public List<Models> getFormModelsByEntityId(@Param("referenceEntityId") Integer ReferenceEntityId);
 }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.assertj.core.util.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +44,346 @@ public class WorkflowUtils {
 	public static final Integer ENTITY = 1;
 	public static final Integer FORM = 2;
 	public static final Integer WORKFLOW = 3;
+	static final String steps = "steps";
+	static final String stepId = "stepId";
+	static final String tasks = "tasks";
+	static final String taskId = "taskId";
+	static final String rulesGroups = "rulesGroups";
+	static final String rule = "rule";
+	static final String decisionGroups = "decisionGroups";
+	static final String decisionGroup = "decisionGroup";
+	static final String criteria = "criteria";
+	static final String decisionField = "decisionField";
+	static final String decision = "decision";
+	static final String decisionValue = "decisionValue";
+	static final String decisionOperator = "decisionOperator";
+	static final String decisionGroupOperator = "decisionGroupOperator";
+	
+	
+	/**
+	 * 
+	 * TODO: preliminary work.  Needs to recursively evaluate decision nodes to
+	 * support an infinite nesting of decisions
+	 * 
+	 * 
+	 * Find  the next step id for the given workflow model, entityDTO and current step id.
+	 * The conditional logic in the workflow model will be evaluated using the given
+	 * data in the DTO. 
+	 * 
+	 * example workflow model:
+	 * ((a == 1 && b == 2) || (c == 3)) 
+	 * 
+	 * definitions:
+	 * a, b and c are all in rules group 1
+	 * a and b are in decision group 1, c is in decision group 2
+	 * a is in the first decision, and b is in the second decision of decision group 1.
+	 * c is in the only decision of decision group 2.
+	 * The rules group operator is ||
+	 * The decision group operator for decision group 1 is &&
+	 * 
+	 * If the values in the given entity DTO match the entire equation above then the
+	 * nextStepId for that rules groups is returned. 
+	 * 
+	 * If there are no decision groups for a given rule node then assume that the next step
+	 * id is always used, return the nextStepId if found
+	 * 
+	 * TODO: currently only supports fields.  Will have to support a lot more than that. 
+	 * 
+	 * @param workflowModel
+	 * @param entityDTO
+	 * @param stepId
+	 * @return next step id or null
+	 */
+	public String findNextStepId(JSONObject workflowModel, JSONObject entityDTO, String currentStepId) {
+		String nextStepId = null;
+		boolean rulevalue = true;//if at any time this becomes false drop out of that rules group
+		int decisionGroupSize = 10;
+
+		if(workflowModel == null || entityDTO == null || Strings.isNullOrEmpty(currentStepId)) return nextStepId;
+
+		JSONObject stepNode = findStepNode(workflowModel, currentStepId);
+		if(stepNode == null) return nextStepId;
+		//At this point we found the correct step
+
+		JSONArray currentRulesGroups = null;
+		try {
+			currentRulesGroups = stepNode.getJSONArray(rulesGroups);
+		} catch (JSONException e) {
+			logger.error("No rules groups found for stepId " + stepId);
+			return nextStepId;
+		}
+
+		//loop through the rules groups array
+		for(int i = 0; i < currentRulesGroups.length(); i++) {
+			try {
+				JSONObject thisRuleGroup = null;
+				try {
+					thisRuleGroup = currentRulesGroups.getJSONObject(i);
+				} catch (JSONException e) {
+					logger.error("Malformed json");
+					continue;
+				}
+				JSONArray currentDecisionGroups = null;
+				try {
+					currentDecisionGroups = thisRuleGroup.getJSONArray(decisionGroups);
+				} catch (JSONException e) {
+					logger.error("Malformed json");
+					continue;
+				}
+				for(int l = 0; l < currentDecisionGroups.length(); l++) {
+					JSONObject thisDecisionGroup = null;
+					boolean decisionGroupValue = true;
+					try {
+						thisDecisionGroup = currentDecisionGroups.getJSONObject(l);
+					} catch (JSONException e) {
+						logger.error("Malformed json");
+						continue;
+					}
+					JSONArray decisionArray = null;
+					try {
+						decisionArray = thisDecisionGroup.getJSONArray(criteria);
+					} catch (JSONException e) {
+						logger.error("Malformed json");
+						continue;				
+					}
+
+					Boolean[] decisionValues = new Boolean[decisionGroupSize];
+					//loop through the decision array as long as no decisions have
+					//been evaluated as false
+					for(int m = 0; m < decisionArray.length(); m++) {
+						JSONObject thisDecision = null;
+						try {
+							thisDecision = decisionArray.getJSONObject(m);
+						} catch (JSONException e) {
+							logger.error("Malformed json");
+							continue;		
+						}
+						String thisFieldName = null;
+						try {
+							thisFieldName = thisDecision.getString(decisionField);
+						} catch (JSONException e) {
+							logger.error("Malformed json");
+							continue;						
+						}
+						if(!Strings.isNullOrEmpty(thisFieldName)) {
+							String thisFieldType = thisDecision.getString(fieldType);
+							//TODO: have to support more than strings and booleans from field values
+							switch(thisFieldType) {
+							case "boolean":
+								boolean thisBFieldValue = thisDecision.getBoolean(decisionValue);
+								boolean fieldValueFromDTO = getBooleanValueForField(entityDTO, thisFieldName);
+								decisionValues[m] = thisBFieldValue == fieldValueFromDTO;
+								break;
+							default://default to String
+								String thisSFieldValue = thisDecision.getString(decisionValue);
+								String sFieldValueFromDTO = getStringValueForField(entityDTO, thisFieldName);
+								decisionValues[m] = thisSFieldValue.equals(sFieldValueFromDTO);
+							}
+						}
+
+					}//end decisionArray loop
+					String decisionGroupOperator = null;
+					try {
+						thisDecisionGroup.getString("decisionGroupOperator");
+					} catch (JSONException e) {
+						logger.error("malformed json");
+						continue;
+					}
+					decisionGroupValue = evaluate(decisionValues[0], decisionValues[1], decisionGroupOperator);
+
+				}
+
+
+
+
+			} catch (JSONException e) {
+				logger.error("Task id not found " + taskId);
+				return nextStepId;
+			}
+		}
+
+		//call getNextStepFromRule using the model, stepid, and rulevalue
+
+		return nextStepId;
+	}
+	
+	/**
+	 * Must assume that the Boolean array contains only 2 members
+	 * 
+	 * @param values
+	 * @param operator
+	 * @return truth value
+	 */
+	private boolean evaluate(Boolean value1, Boolean value2, String operator) {
+		if(Strings.isNullOrEmpty(operator) || value1 == null || value2 == null) return false;
+		if(operator.equalsIgnoreCase("and")) {
+			return value1 && value2; 
+		} 
+		return value1 || value2;
+	}
+	
+	/**
+	 * Find the step node from the workflow model for the given step id
+	 * if found otherwise null
+	 * 
+	 * @param workflowModel
+	 * @param stepId
+	 * @return the step node or null
+	 */
+	private JSONObject findStepNode(JSONObject workflowModel, String currentStepId) {
+		JSONObject stepNode = null;
+
+		if(workflowModel == null || Strings.isNullOrEmpty(currentStepId)) return stepNode;
+
+		JSONArray stepArray = null;
+		try {
+			stepArray = workflowModel.getJSONArray(steps);
+		} catch (JSONException e) {
+			logger.error("Couldn't find any steps");
+			return stepNode;
+		}
+		//Find the given stepId
+		for(int j = 0; j < stepArray.length() && stepNode == null; j++) {
+			JSONObject thisStepNode = null;
+			try {
+				thisStepNode = stepArray.getJSONObject(j);
+			} catch (JSONException e) {
+				logger.error("malformed JSON");
+				continue;
+			}
+			if(thisStepNode == null) continue;
+			String thisStepId = null;
+			try {
+				thisStepId = thisStepNode.getString(stepId);
+			} catch(JSONException e) {
+				logger.error("malformed JSON");
+				continue;
+			}
+			if(!Strings.isNullOrEmpty(thisStepId)) {
+				if(thisStepId.equals(currentStepId)) {
+					stepNode = thisStepNode;
+				}
+			}
+		}
+		return stepNode;
+	}
+	
+	/**
+	 * Get the String value for the given field from the DTO.
+	 * 
+	 * @param entityDTO
+	 * @param fieldName
+	 * @return field value or null
+	 */
+	public String getStringValueForField(JSONObject entityDTO, String fieldName) {
+		String returnValue = null;
+		if(entityDTO == null || Strings.isNullOrEmpty(fieldName)) return returnValue;
+
+		try {
+			JSONArray fieldArray = entityDTO.getJSONArray("fields");
+			if(fieldArray != null) {
+				boolean found = false;
+				for(int i = 0; i < entityDTO.length() && !found; i++) {
+					JSONObject thisFieldJson = fieldArray.getJSONObject(i);
+					if(thisFieldJson != null) {
+						if(fieldName.equals(thisFieldJson.getString("fieldName"))) { 
+								returnValue = thisFieldJson.getString("value");
+								found = true;
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			logger.error("Error getting fields from DTO ", e);
+		}
+		return returnValue;
+	}
+	
+	/**
+	 * Get the boolean value for the given field from the DTO.
+	 * 
+	 * @param entityDTO
+	 * @param fieldName
+	 * @return field value or null
+	 */
+	public Boolean getBooleanValueForField(JSONObject entityDTO, String fieldName) {
+		Boolean returnValue = null;
+		if(entityDTO == null || Strings.isNullOrEmpty(fieldName)) return returnValue;
+
+		try {
+			JSONArray fieldArray = entityDTO.getJSONArray("fields");
+			if(fieldArray != null) {
+				boolean found = false;
+				for(int i = 0; i < entityDTO.length() && !found; i++) {
+					JSONObject thisFieldJson = fieldArray.getJSONObject(i);
+					if(thisFieldJson != null) {
+						if(fieldName.equals(thisFieldJson.getString("fieldName"))) { 
+								returnValue = thisFieldJson.getBoolean("value");
+								found = true;
+						}
+					}
+				}
+			}
+		} catch (JSONException e) {
+			logger.error("Error getting fields from DTO ", e);
+		}
+		return returnValue;
+	}
+	
+	/**
+	 * Find the truth value for a decision node based on the entityDTO.
+	 * 
+	 * Assumption: no more than 2 things can be compared at a time,
+	 * therefore return false and log an error if there are more than
+	 * 2 statements to compare
+	 * 
+	 * 
+	 * @param decisionNode
+	 * @param entityDTO
+	 * @return boolean
+	 */
+	public boolean evaluateDecisionNode(JSONObject decisionNode, JSONObject entityDTO) {
+		boolean returnValue = false;
+		int size = 10;
+		JSONArray decisionArray = null;
+		try {
+			decisionArray = decisionNode.getJSONArray(decision);
+			if(decisionArray.length() > 2) {
+				logger.error("Malformed decision node");
+				return returnValue;
+			}
+			Boolean[] decisionValues = new Boolean[size];
+			for(int i = 0; i < decisionArray.length();i++) {
+				JSONObject thisDecision = decisionArray.getJSONObject(i);
+				String thisFieldType = thisDecision.getString(fieldType);
+				String thisFieldName = thisDecision.getString(decisionField);
+				switch(thisFieldType) {
+				case "boolean":
+					boolean thisBFieldValue = thisDecision.getBoolean(decisionValue);
+					boolean fieldValueFromDTO = getBooleanValueForField(entityDTO, thisFieldName);
+					decisionValues[i] = (thisBFieldValue == fieldValueFromDTO);
+					break;
+				default://default to String
+					String thisSFieldValue = thisDecision.getString(decisionValue);
+					String sFieldValueFromDTO = getStringValueForField(entityDTO, thisFieldName);
+					decisionValues[i] = thisSFieldValue.equals(sFieldValueFromDTO);
+				}
+			}
+
+			String thisOperator = decisionNode.getString(decisionOperator);
+			if(thisOperator.equalsIgnoreCase("or")) {
+				returnValue = decisionValues[0] || decisionValues[1];
+			}
+			returnValue = decisionValues[0] && decisionValues[1];
+
+		} catch (JSONException e) {
+			logger.error("Malformed JSON");
+			return returnValue;
+		}		
+
+		return returnValue;
+	}
+	
 	
 	/**
 	 *  Given the workflow model, the current step id and the value of
