@@ -840,7 +840,6 @@ public class WorkflowUtilsTest {
 		valueStr = utils.getStringValueForField(entityDTO, "Doesn't exist");
 		assertEquals("",valueStr);
 	}
-	@Ignore
 	@Test
 	public void testEvaluateDecisionNode() throws Exception {
 		JSONObject testDecisionJson = new JSONObject(testDecision);
@@ -880,7 +879,6 @@ public class WorkflowUtilsTest {
 		assertTrue(utils.saveEntityValues(entityDTO));
 	}
 	
-	@Ignore
 	@Test
 	public void testEvaluateCriteria() throws Exception {
 		final String workflowNodeStr = "{\"decisionField\": \"RadioButton1\",\"decisionValue\": true,\"fieldType\":\"boolean\"}";
@@ -895,7 +893,6 @@ public class WorkflowUtilsTest {
 		assertFalse(utils.evaluateCriteria(workflowNode2, entityDTO));
 	}
 	
-	@Ignore
 	@Test
 	public void testEvaluateDecisionGroup () throws Exception {
 		JSONObject decisionGroup = new JSONObject(testNestedDecisionGroupStr);
