@@ -1,9 +1,6 @@
 package com.medhok.workflowServer.utils;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.assertj.core.util.Strings;
 import org.json.JSONArray;
@@ -19,7 +16,6 @@ import com.medhok.workflowServer.models.GenericTable2;
 import com.medhok.workflowServer.models.ParentGenericTableModel;
 import com.medhok.workflowServer.repositories.GenericTable1Repository;
 import com.medhok.workflowServer.repositories.GenericTable2Repository;
-import com.medhok.workflowServer.repositories.ModelRepository;
 
 
 
@@ -46,6 +42,7 @@ public class WorkflowUtils {
 	public static final Integer WORKFLOW = 3;
 	static final String steps = "steps";
 	static final String stepId = "stepId";
+	static final String nextStepId = "nextStepId";
 	static final String tasks = "tasks";
 	static final String taskId = "taskId";
 	static final String decisionGroup = "decisionGroup";
@@ -53,10 +50,60 @@ public class WorkflowUtils {
 	static final String criteriaOperator = "criteriaOperator";
 	static final String decisionField = "decisionField";
 	static final String decision = "decision";
+	static final String decisions = "decisions";
 	static final String decisionValue = "decisionValue";
 	static final String decisionOperator = "decisionOperator";
 	static final String decisionArray = "decisionArray";
 	
+	/**
+	 * This is the entry point for finding the next step id when an entry is submitted
+	 * 
+	 * 
+	 * @param workflowModel
+	 * @param currentStepId
+	 * @param entityDTO
+	 * @return next step id or null
+	 */
+	public String getNextStepId(JSONObject workflowModel, String currentStepId, JSONObject entityDTO) {
+		String foundNextStepId = null;
+		JSONArray decisionsArray = null;
+		
+		JSONObject stepNode = findStepNode(workflowModel, currentStepId);
+		if(stepNode == null) {
+			logger.error("Step not found for step id " + currentStepId);
+			return foundNextStepId;
+		}
+		
+		try {
+			decisionsArray = stepNode.getJSONArray(decisions);
+		} catch (JSONException e) {
+			logger.error("No decisions found for step id " + currentStepId);
+			return foundNextStepId;
+		}
+		
+		boolean found = false;
+		for (int i = 0; i < decisionsArray.length() && !found; i++) {
+			JSONObject thisDecision = null;
+			try {
+				thisDecision = decisionsArray.getJSONObject(i);
+			} catch (JSONException e) {
+				logger.error("Malformed JSON", e);
+				continue;
+			}
+			if(thisDecision != null) {
+				found = evaluateDecisionGroup(thisDecision, entityDTO);
+				if(found) {
+					try {
+						foundNextStepId = thisDecision.getString(nextStepId);
+					} catch (JSONException e) {
+						logger.error("No next step id for current step id " + currentStepId);
+					}			
+				}
+			}
+		}
+		
+		return foundNextStepId;
+	}
 	
 	/**
 	 * Recursive method to evaluate the decision for a workflow step.
@@ -74,6 +121,9 @@ public class WorkflowUtils {
 	 * When the decisionOperator and second decisionGroup are found then the method
 	 * would be recursively called with the node for the second decision group.
 	 * 
+	 * Note: If there is no decision array but there is a next step id then evaluate
+	 * 		 as always true.  This would mean that we ALWAYS go to that step
+	 * 
 	 * @param node - This would represent the entire decision for a workflow step upon the
 	 * 				first cycle. All other cycles would represent decision groups within the decision
 	 * @param entityDTO - The values entered for this entity
@@ -82,6 +132,7 @@ public class WorkflowUtils {
 	 */
 	public Boolean evaluateDecisionGroup(JSONObject node, JSONObject entityDTO) {
 		Boolean returnValue = false;
+
 		if(node == null || entityDTO == null) {
 			logger.error("malformed workflow");
 			return returnValue;
@@ -90,12 +141,23 @@ public class WorkflowUtils {
 		try {
 			thisDecisionArray = node.getJSONArray(decisionArray);
 		} catch (JSONException e) {
-			logger.error("malformed workflow node", e);
-			return returnValue;
+			//There's no decision array, either there's no decision
+			//and we always go to the next step id or the json is malformed
+			//continue for now
 		}
 		if(thisDecisionArray == null) {
-			logger.error("No decision array in workflow node");
-			return returnValue;
+			//We never use nextStep id, just testing here if
+			//it exists
+			String foundNextStepId = null;
+			try {
+				foundNextStepId = node.getString(nextStepId);
+			} catch (JSONException e) {
+				logger.error("No decisions or next step id in the step node. Malformed JSON");
+				return returnValue;
+			}
+			//there's no decision array but there IS a next step id
+			//so assume that we should ALWAYS go to that step
+			return true;
 		}
 		//All decision groups have a decision array
 		for(int i = 0; i < thisDecisionArray.length();i++) {

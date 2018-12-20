@@ -2,7 +2,6 @@ package com.medhok.workflowServer.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -11,7 +10,6 @@ import org.json.JSONObject;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.medhok.workflowServer.models.GenericTable1;
 import com.medhok.workflowServer.repositories.GenericTable1Repository;
 import com.medhok.workflowServer.utils.WorkflowUtils;
 
@@ -37,137 +34,183 @@ public class WorkflowUtilsTest {
 	GenericTable1Repository g1repo;
 	
 	final String testWorkflowModelStr = "{\n" + 
-			"  \"step1\": {\n" + 
-			"    \"task1\": {\n" + 
-			"      \"parentFormId\": \"1\",\n" + 
-			"      \"workFlowStatus\": \"1\",\n" + 
-			"      \"decision\": [\n" + 
+			"  \"workflow name\": \"workflow1\",\n" + 
+			"  \"steps\": [\n" + 
+			"    {\n" + 
+			"      \"stepId\": \"1\",\n" + 
+			"      \"tasks\": [\n" + 
 			"        {\n" + 
-			"          \"multiDecision\": {\n" + 
-			"            \"decisionArray\": [\n" + 
-			"              {\n" + 
-			"                \"descisionField\": \"Status\",\n" + 
-			"                \"value\": \"Cancelled\"\n" + 
-			"              },\n" + 
-			"              {\n" + 
-			"                \"descisionField\": \"Submitted By\",\n" + 
-			"                \"value\": \"Provider\"\n" + 
-			"              }\n" + 
-			"            ],\n" + 
-			"            \"nextStepId\": 2\n" + 
-			"          }\n" + 
+			"          \"taskId\": \"task1\",\n" + 
+			"          \"parentFormId\": \"1\",\n" + 
+			"          \"workFlowStatus\": \"1\"\n" + 
 			"        },\n" + 
 			"        {\n" + 
-			"          \"descisionField\": \"Status\",\n" + 
-			"          \"value\": \"In Progress\",\n" + 
-			"          \"nextScreenId\": 3\n" + 
+			"          \"taskId\": \"task2\",\n" + 
+			"          \"parentFormId\": \"2\",\n" + 
+			"          \"workFlowStatus\": \"1\"\n" + 
 			"        }\n" + 
+			"      ],\n" + 
+			"      \"decisions\": [\n" + 
+			testNestedDecisionGroupStr +		
 			"      ]\n" + 
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"connections\": [\n" + 
+			"    {\n" + 
+			"      \"sourceId\": \"1\",\n" + 
+			"      \"targetId\": \"2\"\n" + 
 			"    },\n" + 
-			"    \"stepId\": \"1\"\n" + 
-			"  },\n" + 
-			"  \"step2\": {\n" + 
-			"    \"stepId\": 2,\n" + 
-			"    \"task1\": {\n" + 
-			"      \"workFlowStatus\": \"2\",\n" + 
-			"      \"decision\": [\n" + 
+			"    {\n" + 
+			"      \"sourceId\": \"2\",\n" + 
+			"      \"targetId\": \"3\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"data\": {\n" + 
+			"        \"condition\": \"true\"\n" + 
+			"      },\n" + 
+			"      \"sourceId\": \"3\",\n" + 
+			"      \"targetId\": \"4\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"data\": {\n" + 
+			"        \"condition\": \"false\"\n" + 
+			"      },\n" + 
+			"      \"sourceId\": \"3\",\n" + 
+			"      \"targetId\": \"5\"\n" + 
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"nodes\": [\n" + 
+			"    {\n" + 
+			"      \"step\": \"step1\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 1\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"1\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step2\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 2\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"2\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step3\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Conditional logic\",\n" + 
+			"        \"type\": \"condition\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"3\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step4\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 3\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"4\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step5\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 4\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"5\"\n" + 
+			"    }\n" + 
+			"  ]\n" + 
+			"}";
+	
+	final String testWorkflowModelStr2 = "{\n" + 
+			"  \"workflow name\": \"workflow1\",\n" + 
+			"  \"steps\": [\n" + 
+			"    {\n" + 
+			"      \"stepId\": \"1\",\n" + 
+			"      \"tasks\": [\n" + 
 			"        {\n" + 
-			"          \"descisionField\": \"Status Reason\",\n" + 
-			"          \"value\": \"Data Entry Error\",\n" + 
-			"          \"nextScreenId\": 4\n" + 
+			"          \"taskId\": \"task1\",\n" + 
+			"          \"parentFormId\": \"1\",\n" + 
+			"          \"workFlowStatus\": \"1\"\n" + 
 			"        },\n" + 
 			"        {\n" + 
-			"          \"descisionField\": \"Status Reason\",\n" + 
-			"          \"value\": \"Carelink\",\n" + 
-			"          \"nextScreenId\": 5\n" + 
+			"          \"taskId\": \"task2\",\n" + 
+			"          \"parentFormId\": \"2\",\n" + 
+			"          \"workFlowStatus\": \"1\"\n" + 
 			"        }\n" + 
+			"      ],\n" + 
+			"      \"decisions\": [\n" + 
+			"     {\"nextStepId\": \"2\"}\n" +
 			"      ]\n" + 
 			"    }\n" + 
-			"  },\n" + 
-			"  \"step3\": {\n" + 
-			"    \"stepId\": 3,\n" + 
-			"    \"task1\": {\n" + 
-			"      \"workFlowStatus\": \"2\"\n" + 
+			"  ],\n" + 
+			"  \"connections\": [\n" + 
+			"    {\n" + 
+			"      \"sourceId\": \"1\",\n" + 
+			"      \"targetId\": \"2\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"sourceId\": \"2\",\n" + 
+			"      \"targetId\": \"3\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"data\": {\n" + 
+			"        \"condition\": \"true\"\n" + 
+			"      },\n" + 
+			"      \"sourceId\": \"3\",\n" + 
+			"      \"targetId\": \"4\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"data\": {\n" + 
+			"        \"condition\": \"false\"\n" + 
+			"      },\n" + 
+			"      \"sourceId\": \"3\",\n" + 
+			"      \"targetId\": \"5\"\n" + 
 			"    }\n" + 
-			"  },\n" + 
-			"  \"step4\": {\n" + 
-			"    \"stepId\": 4,\n" + 
-			"    \"task1\": {\n" + 
-			"      \"workFlowStatus\": \"3\"\n" + 
+			"  ],\n" + 
+			"  \"nodes\": [\n" + 
+			"    {\n" + 
+			"      \"step\": \"step1\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 1\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"1\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step2\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 2\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"2\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step3\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Conditional logic\",\n" + 
+			"        \"type\": \"condition\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"3\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step4\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 3\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"4\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"step\": \"step5\",\n" + 
+			"      \"config\": {\n" + 
+			"        \"label\": \"Step 4\",\n" + 
+			"        \"type\": \"transform\"\n" + 
+			"      },\n" + 
+			"      \"id\": \"5\"\n" + 
 			"    }\n" + 
-			"  },\n" + 
-			"  \"step5\": {\n" + 
-			"    \"stepId\": 5,\n" + 
-			"    \"task1\": {\n" + 
-			"      \"workFlowStatus\": \"3\"\n" + 
-			"    }\n" + 
-			"  },\n" + 
-			"      \"connections\": [\n" + 
-			"      {\n" + 
-			"        \"sourceId\": \"1\",\n" + 
-			"        \"targetId\": \"2\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"sourceId\": \"2\",\n" + 
-			"        \"targetId\": \"3\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"data\": {\n" + 
-			"          \"condition\": \"true\"\n" + 
-			"        },\n" + 
-			"        \"sourceId\": \"3\",\n" + 
-			"        \"targetId\": \"4\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"data\": {\n" + 
-			"          \"condition\": \"false\"\n" + 
-			"        },\n" + 
-			"        \"sourceId\": \"3\",\n" + 
-			"        \"targetId\": \"5\"\n" + 
-			"      }\n" + 
-			"    ],\n" + 
-			"    \"nodes\": [\n" + 
-			"      {\n" + 
-			"        \"step\": \"step1\",\n" + 
-			"        \"config\": {\n" + 
-			"          \"label\": \"Step 1\",\n" + 
-			"          \"type\": \"transform\"\n" + 
-			"        },\n" + 
-			"        \"id\": \"1\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"step\": \"step2\",\n" + 
-			"        \"config\": {\n" + 
-			"          \"label\": \"Step 2\",\n" + 
-			"          \"type\": \"transform\"\n" + 
-			"        },\n" + 
-			"        \"id\": \"2\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"step\": \"step3\",\n" + 
-			"        \"config\": {\n" + 
-			"          \"label\": \"Conditional logic\",\n" + 
-			"          \"type\": \"condition\"\n" + 
-			"        },\n" + 
-			"        \"id\": \"3\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"step\": \"step4\",\n" + 
-			"        \"config\": {\n" + 
-			"          \"label\": \"Step 3\",\n" + 
-			"          \"type\": \"transform\"\n" + 
-			"        },\n" + 
-			"        \"id\": \"4\"\n" + 
-			"      },\n" + 
-			"      {\n" + 
-			"        \"step\": \"step5\",\n" + 
-			"        \"config\": {\n" + 
-			"          \"label\": \"Step 4\",\n" + 
-			"          \"type\": \"transform\"\n" + 
-			"        },\n" + 
-			"        \"id\": \"5\"\n" + 
-			"      }\n" + 
-			"    ]\n" + 
+			"  ]\n" + 
 			"}";
 	
 	
@@ -602,7 +645,8 @@ public class WorkflowUtilsTest {
 			"		\"fieldType\": boolean\n" +
 			"    }\n" + 
 			"  ],\n" + 
-			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionOperator\": \"and\",\n" +
+			"  \"nextStepId\": \"2\",\n" + 
 			"  \"decisionGroup\": {\n" + 
 			"    \"decisionArray\": [\n" + 
 			"      {\n" + 
@@ -627,8 +671,7 @@ public class WorkflowUtilsTest {
 			"        }\n" + 
 			"      ]\n" + 
 			"    }\n" + 
-			"  },\n" + 
-			"  \"nextStepId\": \"2\"\n" + 
+			"  }\n" + 
 			"}";
 	
 	final static String testNestedDecisionGroupStr2 = "{\n" + 
@@ -783,6 +826,9 @@ public class WorkflowUtilsTest {
 			"  },\n" + 
 			"  \"nextStepId\": \"2\"\n" + 
 			"}";
+	
+	final static String testNestedDecisionGroupStr6 = "{\"nextStepId\": \"2\"}";
+	
 	@Test
 	public void testGetValueForField() throws Exception {
 		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
@@ -794,7 +840,7 @@ public class WorkflowUtilsTest {
 		valueStr = utils.getStringValueForField(entityDTO, "Doesn't exist");
 		assertEquals("",valueStr);
 	}
-
+	@Ignore
 	@Test
 	public void testEvaluateDecisionNode() throws Exception {
 		JSONObject testDecisionJson = new JSONObject(testDecision);
@@ -834,6 +880,7 @@ public class WorkflowUtilsTest {
 		assertTrue(utils.saveEntityValues(entityDTO));
 	}
 	
+	@Ignore
 	@Test
 	public void testEvaluateCriteria() throws Exception {
 		final String workflowNodeStr = "{\"decisionField\": \"RadioButton1\",\"decisionValue\": true,\"fieldType\":\"boolean\"}";
@@ -848,6 +895,7 @@ public class WorkflowUtilsTest {
 		assertFalse(utils.evaluateCriteria(workflowNode2, entityDTO));
 	}
 	
+	@Ignore
 	@Test
 	public void testEvaluateDecisionGroup () throws Exception {
 		JSONObject decisionGroup = new JSONObject(testNestedDecisionGroupStr);
@@ -855,6 +903,7 @@ public class WorkflowUtilsTest {
 		JSONObject decisionGroup3 = new JSONObject(testNestedDecisionGroupStr3);
 		JSONObject decisionGroup4 = new JSONObject(testNestedDecisionGroupStr4);
 		JSONObject decisionGroup5 = new JSONObject(testNestedDecisionGroupStr5);
+		JSONObject decisionGroup6 = new JSONObject(testNestedDecisionGroupStr5);
 		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
 		JSONObject entityDTO2 = new JSONObject(testEntityDTOStr2);
 
@@ -864,7 +913,27 @@ public class WorkflowUtilsTest {
 		 assertTrue(utils.evaluateDecisionGroup(decisionGroup4, entityDTO));
 		 assertFalse(utils.evaluateDecisionGroup(decisionGroup, entityDTO2));
 		 assertTrue(utils.evaluateDecisionGroup(decisionGroup5, entityDTO));
+		 assertTrue(utils.evaluateDecisionGroup(decisionGroup6, entityDTO));
+		 assertFalse(utils.evaluateDecisionGroup(null, null));
+
+	}
+	
+	@Test
+	public void  testGetNextStepId() throws Exception {
 		
+		JSONObject workflowModel = new JSONObject(testWorkflowModelStr);
+		JSONObject workflowModel2 = new JSONObject(testWorkflowModelStr2);
+		String currentStepId = "1";
+		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
+		JSONObject entityDTO2 = new JSONObject(testEntityDTOStr2);
+		
+		String nextStepId = utils.getNextStepId(workflowModel, currentStepId, entityDTO);
+		assertEquals(nextStepId, "2");
+		nextStepId = utils.getNextStepId(workflowModel, currentStepId, entityDTO2);
+		assertNull(nextStepId);
+		nextStepId = utils.getNextStepId(workflowModel2, currentStepId, entityDTO2);
+		assertEquals(nextStepId, "2");
+		 
 	}
 	
 }
