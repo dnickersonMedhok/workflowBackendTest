@@ -1,6 +1,7 @@
 package com.medhok.workflowServer.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -474,58 +475,105 @@ public class WorkflowUtilsTest {
 			"  \"table\": \"GENERIC_TABLE_1\",\n" + 
 			"  \"fields\": [\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"Status\",\n" + 
+			"      \"decisionField\": \"Status\",\n" + 
 			"      \"column\": \"varchar451\",\n" + 
 			"      \"fieldType\": \"text\",\n" + 
-			"      \"value\": \"Cancelled\"\n" + 
+			"      \"decisionValue\": \"Cancelled\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"Submitted by\",\n" + 
+			"      \"decisionField\": \"Submitted by\",\n" + 
 			"      \"column\": \"varchar452\",\n" + 
 			"      \"fieldType\": \"text\",\n" + 
-			"      \"value\": \"Provider\"\n" + 
+			"      \"decisionValue\": \"Provider\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"Status Reason\",\n" + 
+			"      \"decisionField\": \"Status Reason\",\n" + 
 			"      \"column\": \"varchar453\",\n" + 
 			"      \"fieldType\": \"text\",\n" + 
-			"      \"value\": \"Data Entry Error\"\n" + 
+			"      \"decisionValue\": \"Data Entry Error\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"f2\",\n" + 
+			"      \"decisionField\": \"f2\",\n" + 
 			"      \"column\": \"varchar454\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"f\",\n" + 
+			"      \"decisionField\": \"f\",\n" + 
 			"      \"column\": \"varchar455\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"f2\",\n" + 
+			"      \"decisionField\": \"f2\",\n" + 
 			"      \"column\": \"varchar456\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"d6\",\n" + 
+			"      \"decisionField\": \"d6\",\n" + 
 			"      \"column\": \"varchar457\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"jhjh\",\n" + 
+			"      \"decisionField\": \"jhjh\",\n" + 
 			"      \"column\": \"varchar458\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"123\",\n" + 
+			"      \"decisionField\": \"123\",\n" + 
 			"      \"column\": \"varchar459\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
 			"    },\n" + 
 			"    {\n" + 
-			"      \"fieldName\": \"ert\",\n" + 
+			"      \"decisionField\": \"ert\",\n" + 
 			"      \"column\": \"varchar4510\",\n" + 
 			"      \"fieldType\": \"text\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton1\",\n" + 
+			"      \"column\": \"checkbox_1\",\n" + 
+			"      \"fieldType\": \"boolean\",\n" +
+			"      \"decisionValue\": true" +
+			"    },\n" +
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"column\": \"checkbox_1\",\n" + 
+			"      \"fieldType\": \"boolean\",\n" +
+			"      \"decisionValue\": false" +
 			"    }\n" + 
+			
+			"  ],\n" + 
+			"  \"table\": \"GENERIC_TABLE_1\"\n" + 
+			"}";
+	
+	final String testEntityDTOStr2 = "{\n" + 
+			"  \"entityName\": \"asdfsd\",\n" + 
+			"  \"parentTable\": \"\",\n" + 
+			"  \"table\": \"GENERIC_TABLE_1\",\n" + 
+			"  \"fields\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"Status\",\n" + 
+			"      \"column\": \"varchar451\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+			"      \"decisionValue\": \"wrong answer\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"Status Reason\",\n" + 
+			"      \"column\": \"varchar453\",\n" + 
+			"      \"fieldType\": \"text\",\n" + 
+			"      \"decisionValue\": \"Data Entry Error\"\n" + 
+			"    },\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton1\",\n" + 
+			"      \"column\": \"checkbox_1\",\n" + 
+			"      \"fieldType\": \"boolean\",\n" +
+			"      \"decisionValue\": false" +
+			"    },\n" +
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"column\": \"checkbox_1\",\n" + 
+			"      \"fieldType\": \"boolean\",\n" +
+			"      \"decisionValue\": false" +
+			"    }\n" + 
+			
 			"  ],\n" + 
 			"  \"table\": \"GENERIC_TABLE_1\"\n" + 
 			"}";
@@ -546,6 +594,195 @@ public class WorkflowUtilsTest {
 			"          \"decisionOperator\": \"and\"\n" + 
 			"        }";
 	
+	final static String testNestedDecisionGroupStr = "{\n" + 
+			"  \"decisionArray\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"decisionValue\": false,\n" +
+			"		\"fieldType\": boolean\n" +
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionGroup\": {\n" + 
+			"    \"decisionArray\": [\n" + 
+			"      {\n" + 
+			"        \"decisionField\": \"RadioButton1\",\n" + 
+			"        \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"decisionOperator\": \"or\",\n" + 
+			"    \"decisionGroup\": {\n" + 
+			"      \"decisionArray\": [\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status\",\n" + 
+			"          \"decisionValue\": \"Cancelled\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status Reason\",\n" + 
+			"          \"decisionValue\": \"Data Entry Error\",\n" + 
+			"          \"criteriaOperator\": \"and\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"nextStepId\": \"2\"\n" + 
+			"}";
+	
+	final static String testNestedDecisionGroupStr2 = "{\n" + 
+			"  \"decisionArray\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionGroup\": {\n" + 
+			"    \"decisionArray\": [\n" + 
+			"      {\n" + 
+			"        \"decisionField\": \"RadioButton1\",\n" + 
+			"        \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"decisionOperator\": \"or\",\n" + 
+			"    \"decisionGroup\": {\n" + 
+			"      \"decisionArray\": [\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status\",\n" + 
+			"          \"decisionValue\": \"Cancelled\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status Reason\",\n" + 
+			"          \"decisionValue\": \"Data Entry Error\",\n" + 
+			"          \"criteriaOperator\": \"and\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"nextStepId\": \"2\"\n" + 
+			"}";
+	
+	final static String testNestedDecisionGroupStr3 = "{\n" + 
+			"  \"decisionArray\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionGroup\": {\n" + 
+			"    \"decisionArray\": [\n" + 
+			"      {\n" + 
+			"        \"decisionField\": \"RadioButton1\",\n" + 
+			"        \"decisionValue\": false,\n" +
+			"		\"fieldType\": boolean\n" +
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"decisionOperator\": \"and\",\n" + 
+			"    \"decisionGroup\": {\n" + 
+			"      \"decisionArray\": [\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status\",\n" + 
+			"          \"decisionValue\": \"Cancelled\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status Reason\",\n" + 
+			"          \"decisionValue\": \"Data Entry Error\",\n" + 
+			"          \"criteriaOperator\": \"and\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"nextStepId\": \"2\"\n" + 
+			"}";
+	
+	final static String testNestedDecisionGroupStr4 = "{\n" + 
+			"  \"decisionArray\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"decisionValue\": false,\n" +
+			"		\"fieldType\": boolean\n" +
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionGroup\": {\n" + 
+			"    \"decisionArray\": [\n" + 
+			"      {\n" + 
+			"        \"decisionField\": \"RadioButton1\",\n" + 
+			"        \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"decisionOperator\": \"or\",\n" + 
+			"    \"decisionGroup\": {\n" + 
+			"      \"decisionArray\": [\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status\",\n" + 
+			"          \"decisionValue\": \"wrong answer\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status Reason\",\n" + 
+			"          \"decisionValue\": \"Data Entry Error\",\n" + 
+			"          \"criteriaOperator\": \"and\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"nextStepId\": \"2\"\n" + 
+			"}";
+	
+	final static String testNestedDecisionGroupStr5 = "{\n" + 
+			"  \"decisionArray\": [\n" + 
+			"    {\n" + 
+			"      \"decisionField\": \"RadioButton2\",\n" + 
+			"      \"decisionValue\": false,\n" +
+			"		\"fieldType\": boolean\n" +
+			"    }\n" + 
+			"  ],\n" + 
+			"  \"decisionOperator\": \"and\",\n" + 
+			"  \"decisionGroup\": {\n" + 
+			"    \"decisionArray\": [\n" + 
+			"      {\n" + 
+			"        \"decisionField\": \"RadioButton1\",\n" + 
+			"        \"decisionValue\": true,\n" +
+			"		\"fieldType\": boolean\n" +
+			"      }\n" + 
+			"    ],\n" + 
+			"    \"decisionOperator\": \"or\",\n" + 
+			"    \"decisionGroup\": {\n" + 
+			"      \"decisionArray\": [\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"field1\",\n" + 
+			"          \"decisionValue\": \"wrong answer\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status\",\n" + 
+			"          \"decisionValue\": \"Cancelled\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        },\n" + 
+			"        {\n" + 
+			"          \"decisionField\": \"Status Reason\",\n" + 
+			"          \"decisionValue\": \"Data Entry Error\",\n" + 
+			"          \"criteriaOperator\": \"and\",\n" +
+			"		\"fieldType\": \"text\"\n" +
+			"        }\n" + 
+			"      ]\n" + 
+			"    }\n" + 
+			"  },\n" + 
+			"  \"nextStepId\": \"2\"\n" + 
+			"}";
 	@Test
 	public void testGetValueForField() throws Exception {
 		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
@@ -555,31 +792,14 @@ public class WorkflowUtilsTest {
 		valueStr = utils.getStringValueForField(entityDTO, "Submitted by");
 		assertEquals(valueStr, "Provider");
 		valueStr = utils.getStringValueForField(entityDTO, "Doesn't exist");
-		assertNull(valueStr);
+		assertEquals("",valueStr);
 	}
-	
-	
+
 	@Test
 	public void testEvaluateDecisionNode() throws Exception {
 		JSONObject testDecisionJson = new JSONObject(testDecision);
 		JSONObject testEntityDTO = new JSONObject(testEntityDTOStr);
 		assertTrue(utils.evaluateDecisionNode(testDecisionJson, testEntityDTO));
-	}
-	
-	
-	@Test
-	public void testGetNextStep() throws Exception {
-		String thisStepId = "step1";
-		Boolean value = true;
-		JSONObject testJson = new JSONObject(testJsonStr);
-		
-		String nextStep = utils.getNextStepFromRule(testJson, thisStepId, value);
-		assertEquals(nextStep, "decide");
-		value = false;
-		nextStep = utils.getNextStepFromRule(testJson, thisStepId, value);
-		assertEquals(nextStep, "question2");
-		nextStep = utils.getNextStepFromRule(testJson, thisStepId, null);
-		assertNull(nextStep);
 	}
 	
 	@Ignore
@@ -612,6 +832,39 @@ public class WorkflowUtilsTest {
 		
 		JSONObject entityDTO = new JSONObject(inputEntityValueString);
 		assertTrue(utils.saveEntityValues(entityDTO));
+	}
+	
+	@Test
+	public void testEvaluateCriteria() throws Exception {
+		final String workflowNodeStr = "{\"decisionField\": \"RadioButton1\",\"decisionValue\": true,\"fieldType\":\"boolean\"}";
+		final String workflowNodeStr2 = "{\"decisionField\": \"RadioButton1\",\"decisionValue\": false,\"fieldType\":\"boolean\"}";
+
+		JSONObject workflowNode = new JSONObject(workflowNodeStr);
+		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
+		assertTrue(utils.evaluateCriteria(workflowNode, entityDTO));
+		assertFalse(utils.evaluateCriteria(null, entityDTO));
+		assertFalse(utils.evaluateCriteria(workflowNode, null));
+		JSONObject workflowNode2 = new JSONObject(workflowNodeStr2);
+		assertFalse(utils.evaluateCriteria(workflowNode2, entityDTO));
+	}
+	
+	@Test
+	public void testEvaluateDecisionGroup () throws Exception {
+		JSONObject decisionGroup = new JSONObject(testNestedDecisionGroupStr);
+		JSONObject decisionGroup2 = new JSONObject(testNestedDecisionGroupStr2);
+		JSONObject decisionGroup3 = new JSONObject(testNestedDecisionGroupStr3);
+		JSONObject decisionGroup4 = new JSONObject(testNestedDecisionGroupStr4);
+		JSONObject decisionGroup5 = new JSONObject(testNestedDecisionGroupStr5);
+		JSONObject entityDTO = new JSONObject(testEntityDTOStr);
+		JSONObject entityDTO2 = new JSONObject(testEntityDTOStr2);
+
+		 assertTrue(utils.evaluateDecisionGroup(decisionGroup, entityDTO));
+		 assertFalse(utils.evaluateDecisionGroup(decisionGroup2, entityDTO));
+		 assertFalse(utils.evaluateDecisionGroup(decisionGroup3, entityDTO));
+		 assertTrue(utils.evaluateDecisionGroup(decisionGroup4, entityDTO));
+		 assertFalse(utils.evaluateDecisionGroup(decisionGroup, entityDTO2));
+		 assertTrue(utils.evaluateDecisionGroup(decisionGroup5, entityDTO));
+		
 	}
 	
 }
