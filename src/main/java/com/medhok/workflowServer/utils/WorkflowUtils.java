@@ -451,9 +451,13 @@ public class WorkflowUtils {
 						thisNode.put(column, textFieldList.get(0));
 						textFieldList.remove(0);
 						break;
-					case "checkbox" :
+					case "boolean" :
 						thisNode.put(column, checkboxFieldList.get(0));
 						checkboxFieldList.remove(0);
+						break;
+					default:
+						thisNode.put(column, textFieldList.get(0));
+						textFieldList.remove(0);	
 				}
 			}
 		} catch (Exception e) {
@@ -478,8 +482,6 @@ public class WorkflowUtils {
 		}
 		return returnJsonStr;
 	}
-	
-	
 	
 	public boolean saveEntityValues(String entityDTO) {
 		if(entityDTO == null) return false;
